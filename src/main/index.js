@@ -1,11 +1,39 @@
 import { app, shell, BrowserWindow, ipcMain, Menu, net, clipboard, dialog, globalShortcut } from 'electron'
-import { join } from 'path'
-import { electronApp, optimizer, is } from '@electron-toolkit/utils'
+import { electronApp, optimizer } from '@electron-toolkit/utils'
 import icon from '../../build/icon.png?asset'
 import { downloadImage } from './utils'
 import { autoUpdater } from 'electron-updater'
-// import https from 'https'
-// import { exec } from 'child_process'
+import path from 'path'
+import { join } from 'path'
+
+const isDev = process.env.NODE_ENV === 'development';
+
+let mainWindow; // 假设您已经有一个创建主窗口的变量
+
+
+function createPurchaseWindow() {
+  // 创建一个新的浏览器窗口
+  let purchaseWindow = new BrowserWindow({
+    width: 400,
+    height: 600,
+    webPreferences: {
+      nodeIntegration: true,
+      contextIsolation: false
+    }
+  });
+
+  // 加载带有信息和图片的HTML到窗口
+  // 确保路径正确指向src\renderer\purchase.html
+  const htmlPath = 'file://' + path.join(__dirname, '..', 'src', 'renderer', 'purchase.html');
+  purchaseWindow.loadURL(htmlPath);
+
+  // 当窗口关闭时，释放purchaseWindow变量
+  purchaseWindow.on('closed', () => {
+    purchaseWindow = null;
+  });
+}
+
+
 
 const isMac = process.platform === 'darwin'
 
@@ -16,7 +44,7 @@ app.commandLine.appendSwitch('ignore-certificate-errors', 'true');
 function createWindow() {
   // Create the browser window.
   // Menu.setApplicationMenu(null)
-  const mainWindow = new BrowserWindow({
+  mainWindow = new BrowserWindow({
     width: 900,
     height: 670,
     show: false,
@@ -31,8 +59,7 @@ function createWindow() {
       experimentalFeatures: true
     }
   })
-
-  if (!is.dev) {
+  if (!isDev) {
     const menu = Menu.buildFromTemplate([
       {
         label: '静婳AI',
@@ -40,9 +67,9 @@ function createWindow() {
           ...(isMac
             ? [
                 {
-                  label: '静婳AI',
+                  label: '关于静婳AI',
                   click: function () {
-                    // app.quit()
+                    // 在这里添加点击“关于静婳AI”时应执行的操作
                   }
                 }
               ]
@@ -51,14 +78,34 @@ function createWindow() {
             label: '退出应用',
             accelerator: 'Command+Q',
             click: function () {
-              app.quit()
+              app.quit(); // 退出应用
             }
           },
           {
             label: '退出重登',
             click: function () {
-              mainWindow.webContents.send('back-home')
+              mainWindow.webContents.send('back-home'); // 退出并返回首页
             }
+          }
+        ]
+      },
+      {
+        label: '切换账号',
+        submenu: [
+          {
+            label: '点击后输入新的授权码即可',
+            click: function () {
+              mainWindow.webContents.send('back-home'); // 发送'back-home'消息以处理账号切换
+            }
+          }
+        ]
+      },
+      {
+        label: 'GPT会员',
+        submenu: [
+          {
+            label: '点这儿咨询购买',
+            click: () => createPurchaseWindow() // 点击时创建并显示购买窗口
           }
         ]
       },
@@ -73,9 +120,11 @@ function createWindow() {
           { label: '全选', accelerator: 'CmdOrCtrl+A', role: 'selectAll' }
         ]
       }
-    ])
-    Menu.setApplicationMenu(menu)
+    ]);
+    Menu.setApplicationMenu(menu); // 设置应用菜单
   }
+  
+  
   // mainWindow.webContents.openDevTools({
   //   mode: 'bottom'
   // })
@@ -92,6 +141,7 @@ function createWindow() {
     mainWindow.show()
     mainWindow.focus()
   })
+  mainWindow.show()
 
   mainWindow.webContents.setWindowOpenHandler((details) => {
     shell.openExternal(details.url)
@@ -100,7 +150,7 @@ function createWindow() {
 
   // HMR for renderer base on electron-vite cli.
   // Load the remote URL for development or the local html file for production.
-  if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
+  if (isDev && process.env['ELECTRON_RENDERER_URL']) {
     mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL'])
   } else {
     mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
@@ -276,8 +326,8 @@ app.whenReady().then(() => {
 
   autoUpdater.setFeedURL({
     provider: 'github',
-    repo: 'tillywong153111',
-    owner: 'MMJ1',
+    repo: 'MMJ1',
+    owner: 'tillywong153111',
     private: false, // 如果你的仓库是私有的，需要设置为 true
   });
   autoUpdater.autoDownload = false;

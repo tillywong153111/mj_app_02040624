@@ -1,6 +1,6 @@
 {
   "name": "Midjourney",
-  "version": "1.0.4",
+  "version": "1.0.3",
   "description": "Midjourney",
   "main": "./out/main/index.js",
   "author": "仅供学习",
