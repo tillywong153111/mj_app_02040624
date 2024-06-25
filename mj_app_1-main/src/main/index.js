@@ -5,6 +5,7 @@ import { downloadImage } from './utils'
 import { autoUpdater } from 'electron-updater'
 import path from 'path'
 import { join } from 'path'
+const url = require('url');
 
 const isDev = process.env.NODE_ENV === 'development';
 
@@ -12,29 +13,29 @@ let mainWindow; // 假设您已经有一个创建主窗口的变量
 
 
 function createPurchaseWindow() {
-  // 创建一个新的浏览器窗口
   let purchaseWindow = new BrowserWindow({
     width: 400,
     height: 600,
     webPreferences: {
-      nodeIntegration: true,
-      contextIsolation: false
+      preload: join(__dirname, '../preload/index.js'),
+      nodeIntegration: false,
+      contextIsolation: true
     }
   });
 
-  // 加载带有信息和图片的HTML到窗口
-  // 确保路径正确指向src\renderer\purchase.html
-  const htmlPath = 'file://' + path.join(__dirname, 'purchase.html');
+  // 使用 app.getAppPath() 获取应用的根目录路径
+  const htmlPath = url.format({
+    pathname: path.join(app.getAppPath(), 'src', 'renderer', 'purchase.html'),
+    protocol: 'file:',
+    slashes: true
+  });
+
   purchaseWindow.loadURL(htmlPath);
   
-
-  // 当窗口关闭时，释放purchaseWindow变量
   purchaseWindow.on('closed', () => {
     purchaseWindow = null;
   });
 }
-
-
 
 const isMac = process.platform === 'darwin'
 
@@ -45,6 +46,7 @@ app.commandLine.appendSwitch('ignore-certificate-errors', 'true');
 function createWindow() {
   // Create the browser window.
   // Menu.setApplicationMenu(null)
+  console.log(join(__dirname, '../preload/index.js'));
   mainWindow = new BrowserWindow({
     width: 900,
     height: 670,
@@ -54,7 +56,7 @@ function createWindow() {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false,
       webSecurity: false,
-      contextIsolation: false, // false -> 可在渲染进程中使用electron的api，true->需要bridge.js(contextBridge)
+      contextIsolation: true, // false -> 可在渲染进程中使用electron的api，true->需要bridge.js(contextBridge)
       nodeIntegration: true,
       nodeIntegrationInWorker: true,
       experimentalFeatures: true

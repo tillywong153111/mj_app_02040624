@@ -5,6 +5,7 @@ import { downloadImage } from './utils'
 import { autoUpdater } from 'electron-updater'
 import path from 'path'
 import { join } from 'path'
+const url = require('url');
 
 const isDev = process.env.NODE_ENV === 'development';
 
@@ -12,7 +13,6 @@ let mainWindow; // 假设您已经有一个创建主窗口的变量
 
 
 function createPurchaseWindow() {
-  // 创建一个新的浏览器窗口
   let purchaseWindow = new BrowserWindow({
     width: 400,
     height: 600,
@@ -22,18 +22,19 @@ function createPurchaseWindow() {
     }
   });
 
-  // 加载带有信息和图片的HTML到窗口
-  // 确保路径正确指向src\renderer\purchase.html
-  const htmlPath = 'file://' + path.join(__dirname, '..', 'src', 'renderer', 'purchase.html');
-  purchaseWindow.loadURL(htmlPath);
+  // 使用 app.getAppPath() 获取应用的根目录路径
+  const htmlPath = url.format({
+    pathname: path.join(app.getAppPath(), 'src', 'renderer', 'purchase.html'),
+    protocol: 'file:',
+    slashes: true
+  });
 
-  // 当窗口关闭时，释放purchaseWindow变量
+  purchaseWindow.loadURL(htmlPath);
+  
   purchaseWindow.on('closed', () => {
     purchaseWindow = null;
   });
 }
-
-
 
 const isMac = process.platform === 'darwin'
 
@@ -53,7 +54,7 @@ function createWindow() {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false,
       webSecurity: false,
-      contextIsolation: false, // false -> 可在渲染进程中使用electron的api，true->需要bridge.js(contextBridge)
+      contextIsolation: true, // false -> 可在渲染进程中使用electron的api，true->需要bridge.js(contextBridge)
       nodeIntegration: true,
       nodeIntegrationInWorker: true,
       experimentalFeatures: true
@@ -326,8 +327,8 @@ app.whenReady().then(() => {
 
   autoUpdater.setFeedURL({
     provider: 'github',
-    repo: 'MMJ1',
-    owner: 'tillywong153111',
+    repo: 'tillywong153111',
+    owner: 'MMJ1',
     private: false, // 如果你的仓库是私有的，需要设置为 true
   });
   autoUpdater.autoDownload = false;
