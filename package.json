@@ -16,42 +16,36 @@
     "vue-router": "^4.2.5"
   },
   "build": {
-    "extraFiles": [
-      {
-        "from": "./build/ffmpeg.dll",
-        "to": "./"
-      }
-    ],
-    "mac": {
-      "hardenedRuntime": true,
-      "gatekeeperAssess": false,
-      "entitlements": "build/entitlements.mac.plist",
-      "entitlementsInherit": "build/entitlements.mac.plist",
-      "identity": "xinrun wu (V9WZQY22DU)",
-      "type": "distribution"
-    },
-    "dmg": {
-      "sign": false
-    },
-    "win": {
-      "target": "nsis",
-      "verifyUpdateCodeSignature": false,
-      "signDlls": false,
-      "certificateFile": "./resources/mj_app.pfx",
-      "certificatePassword": "Admin_123456"
-    },
-    "nsis": {
-      "oneClick": false,
-      "allowToChangeInstallationDirectory": true
-    },
-    "publish": [
-      {
-        "provider": "github",
-        "owner": "tillywong153111",
-        "repo": "MMJ1"
-      }
-    ]
-  },  
+  "files": [
+    "**/*",
+    "src\renderer\purchase.html"
+  ],
+  "mac": {
+    "hardenedRuntime": true,
+    "gatekeeperAssess": false,
+    "entitlements": "build/entitlements.mac.plist",
+    "entitlementsInherit": "build/entitlements.mac.plist",
+    "identity": "xinrun wu (V9WZQY22DU)",
+    "type": "distribution"
+  },
+  "dmg": {
+    "sign": false
+  },
+  "win": {
+    "target": "7z",
+    "verifyUpdateCodeSignature": false,
+    "signDlls": false,
+    "certificateFile": "./resources/mj_app.pfx",
+    "certificatePassword": "Admin_123456"
+  },
+  "publish": [
+    {
+      "provider": "github",
+      "owner": "tillywong153111",
+      "repo": "MMJ1"
+    }
+  ]
+},
   "scripts": {
     "format": "prettier --write .",
     "lint": "eslint . --ext .js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix",
