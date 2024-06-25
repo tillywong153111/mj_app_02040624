@@ -24,8 +24,9 @@ function createPurchaseWindow() {
 
   // 加载带有信息和图片的HTML到窗口
   // 确保路径正确指向src\renderer\purchase.html
-  const htmlPath = 'file://' + path.join(__dirname, '..', 'src', 'renderer', 'purchase.html');
+  const htmlPath = 'file://' + path.join(__dirname, 'purchase.html');
   purchaseWindow.loadURL(htmlPath);
+  
 
   // 当窗口关闭时，释放purchaseWindow变量
   purchaseWindow.on('closed', () => {
