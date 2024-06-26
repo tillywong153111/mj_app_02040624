@@ -15,11 +15,12 @@ const api = {
       // 假设assets目录位于项目根目录下
       imagePath = path.join(__dirname, '../../../assets/wechat.jpg');
     } else {
-      // 生产环境下，资源位于app.asar内
+       // 生产环境下，资源位于app.asar内或用户数据目录下
+      // 如果你决定把资源放在用户数据目录下，确保你的主进程或者打包脚本已经相应地复制了这些资源
       const userDataPath = app.getPath('userData'); // 使用Electron的app模块获取用户数据目录的路径
       imagePath = path.join(userDataPath, 'assets', 'wechat.jpg');
-      //imagePath = path.join(process.resourcesPath, 'app.asar', 'assets', 'wechat.jpg');
-
+      // 如果资源直接包含在 app.asar 中，使用下面的路径
+      // imagePath = path.join(process.resourcesPath, 'app.asar', 'assets', 'wechat.jpg');
     }
     // 使用 pathToFileURL 转换 imagePath 为 file:// URL
     return pathToFileURL(imagePath).href;
