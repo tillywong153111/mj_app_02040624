@@ -17,12 +17,12 @@ function createPurchaseWindow() {
     width: 400,
     height: 600,
     webPreferences: {
-      nodeIntegration: true,
-      contextIsolation: false
+      nodeIntegration: true, // 为了安全起见，最好禁用 nodeIntegration
+      contextIsolation: true, // 启用 contextIsolation
+      preload: join(__dirname, '../preload/index.js')// 指定预加载脚本的路径
     }
   });
 
-  // 使用 app.getAppPath() 获取应用的根目录路径
   const htmlPath = url.format({
     pathname: path.join(app.getAppPath(), 'src', 'renderer', 'purchase.html'),
     protocol: 'file:',
@@ -35,7 +35,6 @@ function createPurchaseWindow() {
     purchaseWindow = null;
   });
 }
-
 const isMac = process.platform === 'darwin'
 
 app.commandLine.appendSwitch('disable-site-isolation-trials')
