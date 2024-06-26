@@ -1,8 +1,10 @@
 import { contextBridge } from 'electron';
 import { electronAPI } from '@electron-toolkit/preload';
 import path from 'path';
+import { pathToFileURL } from 'url'; // 引入 url 模块的 pathToFileURL 方法
 
 console.log('预加载脚本加载');
+
 // 假设在开发环境中，assets 目录位于项目根目录下，而在生产环境中，它位于 resources/app.asar 下
 const isDevelopment = process.env.NODE_ENV === 'development' || !process.defaultApp;
 
@@ -16,9 +18,8 @@ const api = {
       // 生产环境下，资源位于app.asar内
       imagePath = path.join(process.resourcesPath, 'app.asar', 'assets', 'wechat.jpg');
     }
-    //return imagePath;
-    return `file://${imagePath}`;
-
+    // 使用 pathToFileURL 转换 imagePath 为 file:// URL
+    return pathToFileURL(imagePath).href;
   }
 };
 
