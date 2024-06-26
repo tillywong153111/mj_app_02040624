@@ -16,7 +16,10 @@ const api = {
       imagePath = path.join(__dirname, '../../../assets/wechat.jpg');
     } else {
       // 生产环境下，资源位于app.asar内
-      imagePath = path.join(process.resourcesPath, 'app.asar', 'assets', 'wechat.jpg');
+      const userDataPath = app.getPath('userData'); // 使用Electron的app模块获取用户数据目录的路径
+      imagePath = path.join(userDataPath, 'assets', 'wechat.jpg');
+      //imagePath = path.join(process.resourcesPath, 'app.asar', 'assets', 'wechat.jpg');
+
     }
     // 使用 pathToFileURL 转换 imagePath 为 file:// URL
     return pathToFileURL(imagePath).href;
