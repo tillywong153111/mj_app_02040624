@@ -14,8 +14,8 @@ let mainWindow; // 假设您已经有一个创建主窗口的变量
 
 function createPurchaseWindow() {
   let purchaseWindow = new BrowserWindow({
-    width: 400,
-    height: 600,
+    width: 540,
+    height: 630,
     webPreferences: {
       nodeIntegration: true, // 为了安全起见，最好禁用 nodeIntegration
       contextIsolation: true, // 启用 contextIsolation
