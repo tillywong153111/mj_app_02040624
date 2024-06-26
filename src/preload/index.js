@@ -2,6 +2,8 @@ import { contextBridge } from 'electron';
 import { electronAPI } from '@electron-toolkit/preload';
 import path from 'path';
 import { pathToFileURL } from 'url'; // 引入 url 模块的 pathToFileURL 方法
+import { app } from 'electron';
+
 
 console.log('预加载脚本加载');
 

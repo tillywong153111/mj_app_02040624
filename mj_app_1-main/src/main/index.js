@@ -1,4 +1,4 @@
-、import { app, shell, BrowserWindow, ipcMain, Menu, net, clipboard, dialog, globalShortcut } from 'electron'
+import { app, shell, BrowserWindow, ipcMain, Menu, net, clipboard, dialog, globalShortcut } from 'electron'
 import { electronApp, optimizer } from '@electron-toolkit/utils'
 import icon from '../../build/icon.png?asset'
 import { downloadImage } from './utils'
@@ -11,6 +11,7 @@ const isDev = process.env.NODE_ENV === 'development';
 
 
 let mainWindow; // 假设您已经有一个创建主窗口的变量
+
 
 
 
@@ -46,7 +47,7 @@ function createPurchaseWindow() {
     height: 630,
     webPreferences: {
       nodeIntegration: true, // 为了安全起见，最好禁用 nodeIntegration
-      contextIsolation: true, // 启用 contextIsolation
+      contextIsolation: false, // 启用 contextIsolation
       preload: join(__dirname, '../preload/index.js')// 指定预加载脚本的路径
     }
   });
@@ -70,6 +71,21 @@ app.commandLine.appendSwitch('ignore-certificate-errors', 'true');
 
 // bootstrap()
 function createWindow() {
+  // 环境检测
+  const isDevelopment = process.env.NODE_ENV === 'development' || !app.isPackaged;
+
+  let imagePath;
+  if (isDevelopment) {
+    // 开发环境：假设 assets 目录位于项目根目录下
+    imagePath = path.join(__dirname, 'assets', 'wechat.jpg');
+  } else {
+    // 生产环境：资源位于 app.asar 内或用户数据目录下
+    // 这里需要根据您的实际部署情况来确定
+    imagePath = path.join(process.resourcesPath, 'app.asar', 'assets', 'wechat.jpg');
+  }
+// 使用 global 全局变量传递 imagePath
+global.sharedObject = { imagePath: imagePath };
+
   // Create the browser window.
   // Menu.setApplicationMenu(null)
   mainWindow = new BrowserWindow({
@@ -81,7 +97,7 @@ function createWindow() {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false,
       webSecurity: false,
-      contextIsolation: true, // false -> 可在渲染进程中使用electron的api，true->需要bridge.js(contextBridge)
+      contextIsolation: false, // false -> 可在渲染进程中使用electron的api，true->需要bridge.js(contextBridge)
       nodeIntegration: true,
       nodeIntegrationInWorker: true,
       experimentalFeatures: true
