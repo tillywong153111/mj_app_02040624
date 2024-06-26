@@ -16,7 +16,9 @@ const api = {
       // 生产环境下，资源位于app.asar内
       imagePath = path.join(process.resourcesPath, 'app.asar', 'assets', 'wechat.jpg');
     }
-    return imagePath;
+    //return imagePath;
+    return `file://${imagePath}`;
+
   }
 };
 
