@@ -6,10 +6,38 @@ import { autoUpdater } from 'electron-updater'
 import path from 'path'
 import { join } from 'path'
 const url = require('url');
-
+const fs = require('fs');
 const isDev = process.env.NODE_ENV === 'development';
 
+
 let mainWindow; // 假设您已经有一个创建主窗口的变量
+
+
+
+app.on('ready', () => {
+  const userDataPath = app.getPath('userData'); // 正确的变量名
+  const assetsPath = path.join(userDataPath, 'assets'); // 使用 userDataPath 而不是 userDataView
+  const sourceImagePath = path.join(__dirname, 'assets', 'wechat.jpg');
+  const targetImagePath = path.join(assetsPath, 'wechat.jpg');
+
+  // 确保assets目录存在
+  if (!fs.existsSync(assetsPath)) {
+    fs.mkdirSync(assetsPath, { recursive: true });
+  }
+
+  // 检查图片是否已经被复制过了
+  if (!fs.existsSync(targetImagePath)) {
+    // 复制图片到目标路径
+    // 确保源文件存在
+    if (fs.existsSync(sourceImagePath)) {
+      fs.copyFileSync(sourceImagePath, targetImagePath);
+    } else {
+      console.error('Source file does not exist:', sourceImagePath);
+    }
+  }
+});
+
+
 
 
 function createPurchaseWindow() {
