@@ -32,7 +32,6 @@
     "sign": false
   },
   "win": {
-    "target": "7z",
     "verifyUpdateCodeSignature": false,
     "signDlls": false,
     "certificateFile": "./resources/mj_app.pfx",
