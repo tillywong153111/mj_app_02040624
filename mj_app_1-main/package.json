@@ -40,6 +40,15 @@
         "owner": "tillywong153111",
         "repo": "MMJ1"
       }
+    ],
+    "extraResources": [
+      {
+        "from": "./assets",
+        "to": "assets",
+        "filter": [
+          "**/*"
+        ]
+      }
     ]
   },
   "scripts": {
