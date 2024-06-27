@@ -11,21 +11,10 @@ const isDevelopment = process.env.NODE_ENV === 'development' || !process.default
 
 const api = {
   getImagePath: () => {
-    if (isDevelopment) {
-      // 开发环境 - 使用本地路径
-      const imagePath = path.join(__dirname, '../../../assets/wechat.jpg');
-      console.log('NODE_ENV:', process.env.NODE_ENV);
-      console.log('defaultApp:', process.defaultApp);
-      console.log('Image path:', imagePath); // 输出图片路径
-      return pathToFileURL(imagePath).href;
-    } else {
-      // 生产环境 - 使用 GitHub 上托管的图片的 URL
-      const imageUrl = "https://raw.githubusercontent.com/tillywong153111/mj_resources/main/wechat.jpg";
-      console.log('NODE_ENV:', process.env.NODE_ENV);
-      console.log('defaultApp:', process.defaultApp);
-      console.log('Image URL:', imageUrl); // 输出图片URL
-      return imageUrl;
-    }
+    // 使用 GitHub 上托管的图片的 URL
+    const imageUrl = "https://raw.githubusercontent.com/tillywong153111/mj_resources/main/wechat.jpg";
+    console.log('Image URL:', imageUrl); // 输出图片URL
+    return imageUrl;
   }
 };
 

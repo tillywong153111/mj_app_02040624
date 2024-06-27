@@ -12,7 +12,6 @@ const isDev = process.env.NODE_ENV === 'development';
 
 let mainWindow; // 假设您已经有一个创建主窗口的变量
 
-console.log('Is development:', isDevelopment);
 
 
 
