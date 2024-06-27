@@ -119,21 +119,10 @@ function createWindow() {
         ]
       },
       {
-        label: '编辑',
-        submenu: [
-          { label: '复制', accelerator: 'CmdOrCtrl+C', role: 'copy' },
-          { label: '粘贴', accelerator: 'CmdOrCtrl+V', role: 'paste' },
-          { label: '剪切', accelerator: 'CmdOrCtrl+X', role: 'cut' },
-          { label: '撤销', accelerator: 'CmdOrCtrl+Z', role: 'undo' },
-          { label: '重做', accelerator: 'Shift+CmdOrCtrl+Z', role: 'redo' },
-          { label: '全选', accelerator: 'CmdOrCtrl+A', role: 'selectAll' }
-        ]
-      },
-      {
-        label: '设置',
+        label: '声音控制',
         submenu: [
             {
-                label: '关闭所有声音',
+                label: '一键静音',
                 click: () => {
                     // 直接设置静音为 true，关闭所有声音
                     mainWindow.webContents.setAudioMuted(true);
@@ -147,6 +136,17 @@ function createWindow() {
                 }
             }
         ]
+    },
+    {
+      label: '编辑',
+      submenu: [
+        { label: '复制', accelerator: 'CmdOrCtrl+C', role: 'copy' },
+        { label: '粘贴', accelerator: 'CmdOrCtrl+V', role: 'paste' },
+        { label: '剪切', accelerator: 'CmdOrCtrl+X', role: 'cut' },
+        { label: '撤销', accelerator: 'CmdOrCtrl+Z', role: 'undo' },
+        { label: '重做', accelerator: 'Shift+CmdOrCtrl+Z', role: 'redo' },
+        { label: '全选', accelerator: 'CmdOrCtrl+A', role: 'selectAll' }
+      ]
     }
     ]);
     Menu.setApplicationMenu(menu); // 设置应用菜单
