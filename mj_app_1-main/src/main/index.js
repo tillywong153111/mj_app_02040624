@@ -13,34 +13,6 @@ const isDev = process.env.NODE_ENV === 'development';
 let mainWindow; // 假设您已经有一个创建主窗口的变量
 
 
-
-//
-//app.on('ready', () => {
-  //const userDataPath = app.getPath('userData'); // 正确的变量名
-  //const assetsPath = path.join(userDataPath, 'assets'); // 使用 userDataPath 而不是 userDataView
-  //const sourceImagePath = path.join(__dirname, 'assets', 'wechat.jpg');
-  //const targetImagePath = path.join(assetsPath, 'wechat.jpg');
-
-  // 确保assets目录存在
-  //if (!fs.existsSync(assetsPath)) {
-    //fs.mkdirSync(assetsPath, { recursive: true });
-  //}
-
-  // 检查图片是否已经被复制过了
-  //if (!fs.existsSync(targetImagePath)) {
-    // 复制图片到目标路径
-    // 确保源文件存在
-    //if (fs.existsSync(sourceImagePath)) {
-      //fs.copyFileSync(sourceImagePath, targetImagePath);
-    //} else {
-      //console.error('Source file does not exist:', sourceImagePath);
-    //}
-  //}
-//});
-
-
-
-
 function createPurchaseWindow() {
   let purchaseWindow = new BrowserWindow({
     width: 540,
@@ -75,19 +47,8 @@ function createWindow() {
   const isDevelopment = process.env.NODE_ENV === 'development' || !app.isPackaged;
 
   let imagePath;
-  //if (isDevelopment) {
-    // 开发环境：假设 assets 目录位于项目根目录下
-    //imagePath = path.join(__dirname, 'assets', 'wechat.jpg');
-  //} else {
-    // 生产环境：资源位于 app.asar 内或用户数据目录下
-    // 这里需要根据您的实际部署情况来确定
-    //imagePath = path.join(process.resourcesPath, 'app.asar', 'assets', 'wechat.jpg');
-  //}
-// 使用 global 全局变量传递 imagePath
-//global.sharedObject = { imagePath: imagePath };
+  
 
-  // Create the browser window.
-  // Menu.setApplicationMenu(null)
   mainWindow = new BrowserWindow({
     width: 900,
     height: 670,
@@ -95,14 +56,18 @@ function createWindow() {
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
+      partition: 'persist:your_partition_name', 
+      contextIsolation: false,
+      nodeIntegration: true,
       sandbox: false,
       webSecurity: false,
-      contextIsolation: false, // false -> 可在渲染进程中使用electron的api，true->需要bridge.js(contextBridge)
-      nodeIntegration: true,
       nodeIntegrationInWorker: true,
       experimentalFeatures: true
     }
-  })
+  });
+
+
+
   if (!isDev) {
     const menu = Menu.buildFromTemplate([
       {
@@ -163,7 +128,26 @@ function createWindow() {
           { label: '重做', accelerator: 'Shift+CmdOrCtrl+Z', role: 'redo' },
           { label: '全选', accelerator: 'CmdOrCtrl+A', role: 'selectAll' }
         ]
-      }
+      },
+      {
+        label: '设置',
+        submenu: [
+            {
+                label: '关闭所有声音',
+                click: () => {
+                    // 直接设置静音为 true，关闭所有声音
+                    mainWindow.webContents.setAudioMuted(true);
+                }
+            },
+            {
+                label: '开启声音',
+                click: () => {
+                    // 直接设置静音为 false，开启声音
+                    mainWindow.webContents.setAudioMuted(false);
+                }
+            }
+        ]
+    }
     ]);
     Menu.setApplicationMenu(menu); // 设置应用菜单
   }
@@ -188,9 +172,21 @@ function createWindow() {
   mainWindow.show()
 
   mainWindow.webContents.setWindowOpenHandler((details) => {
-    shell.openExternal(details.url)
-    return { action: 'deny' }
-  })
+    const mySession = session.fromPartition('persist:your_partition_name');
+  
+    const newWindow = new BrowserWindow({
+      webPreferences: {
+        // 使用与父窗口相同的会话
+        partition: 'persist:your_partition_name',
+        contextIsolation: false,
+        nodeIntegration: true,
+      }
+    });
+
+    newWindow.loadURL(details.url);
+    return { action: 'deny' };
+  });
+  
 
   // HMR for renderer base on electron-vite cli.
   // Load the remote URL for development or the local html file for production.
@@ -355,6 +351,16 @@ app.whenReady().then(() => {
   })
 
   createWindow()
+  // 在窗口创建后验证会话数据
+  const { session } = require('electron');
+  session.fromPartition('persist:name_of_your_partition').cookies.get({})
+    .then((cookies) => {
+      console.log(cookies); // 查看所有 cookies
+      // 在这里添加基于 cookies 的逻辑，例如更新窗口或状态
+    })
+    .catch((error) => {
+      console.error(error);
+    });
 
   app.on('activate', function () {
     // On macOS it's common to re-create a window in the app when the
