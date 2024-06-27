@@ -14,29 +14,29 @@ let mainWindow; // 假设您已经有一个创建主窗口的变量
 
 
 
-
-app.on('ready', () => {
-  const userDataPath = app.getPath('userData'); // 正确的变量名
-  const assetsPath = path.join(userDataPath, 'assets'); // 使用 userDataPath 而不是 userDataView
-  const sourceImagePath = path.join(__dirname, 'assets', 'wechat.jpg');
-  const targetImagePath = path.join(assetsPath, 'wechat.jpg');
+//
+//app.on('ready', () => {
+  //const userDataPath = app.getPath('userData'); // 正确的变量名
+  //const assetsPath = path.join(userDataPath, 'assets'); // 使用 userDataPath 而不是 userDataView
+  //const sourceImagePath = path.join(__dirname, 'assets', 'wechat.jpg');
+  //const targetImagePath = path.join(assetsPath, 'wechat.jpg');
 
   // 确保assets目录存在
-  if (!fs.existsSync(assetsPath)) {
-    fs.mkdirSync(assetsPath, { recursive: true });
-  }
+  //if (!fs.existsSync(assetsPath)) {
+    //fs.mkdirSync(assetsPath, { recursive: true });
+  //}
 
   // 检查图片是否已经被复制过了
-  if (!fs.existsSync(targetImagePath)) {
+  //if (!fs.existsSync(targetImagePath)) {
     // 复制图片到目标路径
     // 确保源文件存在
-    if (fs.existsSync(sourceImagePath)) {
-      fs.copyFileSync(sourceImagePath, targetImagePath);
-    } else {
-      console.error('Source file does not exist:', sourceImagePath);
-    }
-  }
-});
+    //if (fs.existsSync(sourceImagePath)) {
+      //fs.copyFileSync(sourceImagePath, targetImagePath);
+    //} else {
+      //console.error('Source file does not exist:', sourceImagePath);
+    //}
+  //}
+//});
 
 
 
@@ -75,16 +75,16 @@ function createWindow() {
   const isDevelopment = process.env.NODE_ENV === 'development' || !app.isPackaged;
 
   let imagePath;
-  if (isDevelopment) {
+  //if (isDevelopment) {
     // 开发环境：假设 assets 目录位于项目根目录下
-    imagePath = path.join(__dirname, 'assets', 'wechat.jpg');
-  } else {
+    //imagePath = path.join(__dirname, 'assets', 'wechat.jpg');
+  //} else {
     // 生产环境：资源位于 app.asar 内或用户数据目录下
     // 这里需要根据您的实际部署情况来确定
-    imagePath = path.join(process.resourcesPath, 'app.asar', 'assets', 'wechat.jpg');
-  }
+    //imagePath = path.join(process.resourcesPath, 'app.asar', 'assets', 'wechat.jpg');
+  //}
 // 使用 global 全局变量传递 imagePath
-global.sharedObject = { imagePath: imagePath };
+//global.sharedObject = { imagePath: imagePath };
 
   // Create the browser window.
   // Menu.setApplicationMenu(null)
