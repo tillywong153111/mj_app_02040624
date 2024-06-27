@@ -53,7 +53,7 @@ function createPurchaseWindow() {
   });
 
   const htmlPath = url.format({
-    pathname: path.join(__dirname, 'purchase.html'),
+    pathname: path.join(app.getAppPath(), 'src', 'renderer', 'purchase.html'),
     protocol: 'file:',
     slashes: true
   });
