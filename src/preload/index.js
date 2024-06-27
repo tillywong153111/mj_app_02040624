@@ -15,9 +15,13 @@ const api = {
       // 开发环境 - 使用本地路径
       const imagePath = path.join(__dirname, '../../../assets/wechat.jpg');
       return pathToFileURL(imagePath).href;
+      console.log('Image path:', imagePath); // 输出图片路径
     } else {
       // 生产环境 - 使用 GitHub 上托管的图片的 URL
-      return "https://raw.githubusercontent.com/tillywong153111/mj_resources/main/wechat.jpg";
+      // 生产环境 - 使用 GitHub 上托管的图片的 URL
+      const imageUrl = "https://raw.githubusercontent.com/tillywong153111/mj_resources/main/wechat.jpg";
+      console.log('Image URL:', imageUrl); // 输出图片URL
+      return imageUrl;
     }
   }
 };
