@@ -47,13 +47,13 @@ function createPurchaseWindow() {
     height: 630,
     webPreferences: {
       nodeIntegration: true, // 为了安全起见，最好禁用 nodeIntegration
-      contextIsolation: false, // 启用 contextIsolation
+      contextIsolation: true, // 启用 contextIsolation
       preload: join(__dirname, '../preload/index.js')// 指定预加载脚本的路径
     }
   });
 
   const htmlPath = url.format({
-    pathname: path.join(app.getAppPath(), 'src', 'renderer', 'purchase.html'),
+    pathname: path.join(__dirname, 'purchase.html'),
     protocol: 'file:',
     slashes: true
   });

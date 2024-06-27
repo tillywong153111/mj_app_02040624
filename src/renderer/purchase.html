@@ -38,7 +38,8 @@
     window.addEventListener('DOMContentLoaded', () => {
       // 通过预加载脚本暴露的api对象获取图片路径
       const imagePath = window.api.getImagePath();
-      document.getElementById('wechatImage').src = imagePath;
+      console.log('Image Path:', imagePath); // 打印路径看是否正确
+      document.getElementById('wechatData').src = imagePath;
     });
   </script>
 </body>
