@@ -27,5 +27,4 @@ if (process.contextIsolated) {
   window.api = api;
 }
 
-console.log(path.join(__dirname, '../../../assets/wechat.jpg'));
 console.log(process.resourcesPath);

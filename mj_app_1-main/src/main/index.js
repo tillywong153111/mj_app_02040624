@@ -18,8 +18,8 @@ function createPurchaseWindow() {
     width: 540,
     height: 630,
     webPreferences: {
-      nodeIntegration: true, // 为了安全起见，最好禁用 nodeIntegration
-      contextIsolation: false, // 启用 contextIsolation
+      nodeIntegration: true, 
+      contextIsolation: false, 
       preload: join(__dirname, '../preload/index.js')// 指定预加载脚本的路径
     }
   });
@@ -36,6 +36,7 @@ function createPurchaseWindow() {
     purchaseWindow = null;
   });
 }
+
 const isMac = process.platform === 'darwin'
 
 app.commandLine.appendSwitch('disable-site-isolation-trials')
@@ -65,8 +66,6 @@ function createWindow() {
       experimentalFeatures: true
     }
   });
-
-
 
   if (!isDev) {
     const menu = Menu.buildFromTemplate([
@@ -172,7 +171,7 @@ function createWindow() {
   mainWindow.show()
 
   mainWindow.webContents.setWindowOpenHandler((details) => {
-    const mySession = session.fromPartition('persist:your_partition_name');
+    //const mySession = session.fromPartition('persist:your_partition_name');
   
     const newWindow = new BrowserWindow({
       webPreferences: {
@@ -226,20 +225,20 @@ function createWindow() {
   })
 
   mainWindow.webContents.on('context-menu', async (event, params) => {
-    const { x, y, srcURL } = params
-    console.log(srcURL, '地址')
-    if (!srcURL) return
+    const { x, y, srcURL } = params;
+    if (!srcURL) return;
+
     const menu = Menu.buildFromTemplate([
       {
         label: '复制图片地址',
         click: function () {
           if (srcURL) {
-            clipboard.writeText(srcURL)
+            clipboard.writeText(srcURL);
             dialog.showMessageBox(mainWindow, {
               type: 'info',
               title: '提示',
               message: '图片地址复制成功'
-            })
+            });
           }
         }
       },
@@ -247,37 +246,45 @@ function createWindow() {
         label: '保存到本地',
         click: function () {
           if (srcURL) {
-            console.log(srcURL, '----地址----')
-            dialog
-              .showOpenDialog(mainWindow, {
-                properties: ['openDirectory']
-              })
-              .then(async (result) => {
-                // 如果用户选择了文件夹，则保存图片到该文件夹中
-                if (!result.canceled && result.filePaths.length > 0) {
-                  const downloadPath = result.filePaths[0]
-                  const res = await downloadImage(srcURL, downloadPath)
-                  if (!res) {
-                    shell.openExternal(srcURL)
-                  }
-                  dialog.showMessageBox(mainWindow, {
-                    type: 'info',
-                    title: '提示',
-                    message: res ? '保存成功' : '保存失败，请在浏览器中保存图片'
-                  })
+            dialog.showOpenDialog(mainWindow, {
+              properties: ['openDirectory']
+            }).then(async (result) => {
+              if (!result.canceled && result.filePaths.length > 0) {
+                const downloadPath = result.filePaths[0];
+                const res = await downloadImage(srcURL, downloadPath);
+                const message = res ? '保存成功' : '保存失败，请在浏览器中保存图片';
+                dialog.showMessageBox(mainWindow, {
+                  type: 'info',
+                  title: '提示',
+                  message
+                });
+                if (!res) {
+                  shell.openExternal(srcURL);
                 }
-              })
+              }
+            }).catch(err => {
+              console.error('打开目录选择对话框时发生错误:', err);
+              dialog.showMessageBox(mainWindow, {
+                type: 'error',
+                title: '错误',
+                message: '保存图片时发生错误'
+              });
+            });
           }
         }
       }
-    ])
+    ]);
 
     menu.popup({
       window: mainWindow,
       x,
       y
-    })
-  })
+    });
+  });
+}
+
+
+
 
   // autoUpdater.on('download-progress', (progressObj) => {
   //   if (mainWindow && !mainWindow.isDestroyed()) {
@@ -334,7 +341,7 @@ function createWindow() {
   //   }
   //   event.sender.send('b-submit')
   // })
-}
+
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
@@ -351,16 +358,17 @@ app.whenReady().then(() => {
   })
 
   createWindow()
+  // 注释掉这个块的代码
   // 在窗口创建后验证会话数据
-  const { session } = require('electron');
-  session.fromPartition('persist:name_of_your_partition').cookies.get({})
-    .then((cookies) => {
-      console.log(cookies); // 查看所有 cookies
+  //const { session } = require('electron'); 
+  //session.fromPartition('persist:name_of_your_partition').cookies.get({})
+    //.then((cookies) => {
+      //console.log(cookies); // 查看所有 cookies
       // 在这里添加基于 cookies 的逻辑，例如更新窗口或状态
-    })
-    .catch((error) => {
-      console.error(error);
-    });
+    //})
+    //.catch((error) => {
+      //console.error(error);
+    //});
 
   app.on('activate', function () {
     // On macOS it's common to re-create a window in the app when the
