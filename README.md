@@ -1,3 +1,4 @@
+一个自己自由折腾的版本
 # electron-app
 
 An Electron application with Vue
